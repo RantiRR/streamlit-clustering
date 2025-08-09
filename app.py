@@ -70,7 +70,7 @@ elif menu == "Cluster Baru":
         # Pilih jumlah cluster
         k = st.slider("Pilih jumlah klaster", 2, 10, 3)
 
-        # Jalankan clustering
+        # Jalankan clustering hanya untuk tampilan ini
         df_numerik = df_new.select_dtypes(include='number')
         model = KMeans(n_clusters=k, random_state=42)
         df_new['Cluster'] = model.fit_predict(df_numerik)
@@ -79,6 +79,7 @@ elif menu == "Cluster Baru":
         st.subheader("📄 Data Hasil Clustering Baru")
         st.dataframe(df_new)
 
-        # Simpan hasil
-        df_new.to_csv(file_csv_default, index=False, sep=';')
-        st.success("💾 Hasil disimpan sebagai 'data_cluster.csv' dan akan muncul di semua menu.")
+        # Simpan ke file terpisah supaya dashboard tidak ikut berubah
+        file_cluster_baru = "data_cluster_baru.csv"
+        df_new.to_csv(file_cluster_baru, index=False, sep=';')
+        st.info(f"💾 Hasil disimpan di '{file_cluster_baru}', tidak mempengaruhi data di dashboard.")
