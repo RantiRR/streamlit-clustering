@@ -5,29 +5,40 @@ import seaborn as sns
 from sklearn.cluster import KMeans
 import os
 
+# Konfigurasi halaman
 st.set_page_config(page_title="Dashboard Klaster", layout="wide")
 st.title("📊 Aplikasi Analisis Klaster")
 
-# ======== File default hasil clustering ========
-file_csv_default = "data_awal_iterasi_fixx.csv"
-if os.path.exists(file_csv_default):
-    df_default = pd.read_csv(file_csv_default, sep=None, engine='python')
+# File default CSV
+file_csv_dashboard = "data_awal_iterasi_fixx.csv"
 
+# Cek apakah file sudah ada
+if os.path.exists(file_csv_dashboard):
+    df_default = pd.read_csv("data_awal_iterasi_fixx.csv", sep=";")
 else:
     df_default = None
 
-# ======== Sidebar Menu ========
+# Menu Sidebar
 menu = st.sidebar.selectbox("Pilih Menu", ["Dashboard", "Cluster", "Pie Chart", "Cluster Baru"])
 
 # ======== Menu: Dashboard ========
 if menu == "Dashboard":
-    st.subheader("📄 Data Lengkap")
-    if df_default is not None:
-        st.dataframe(df_default)
-    else:
-        st.warning("⚠️ Belum ada file CSV utama yang dimuat.")
+    st.subheader("📄 Data Lengkap (Dashboard)")
 
-# ======== Menu: Cluster (Bar Chart) ========
+    # Upload CSV utama kalau belum ada
+    if df_default is None:
+        uploaded_dashboard = st.file_uploader("Upload file CSV utama untuk Dashboard", type=["csv"])
+        if uploaded_dashboard:
+            df_default = pd.read_csv(uploaded_dashboard, sep=";")
+            df_default.to_csv(file_csv_dashboard, index=False, sep=";")
+            st.success("✅ File utama berhasil diunggah!")
+            st.dataframe(df_default)
+        else:
+            st.warning("⚠️ Belum ada file CSV utama yang dimuat.")
+    else:
+        st.dataframe(df_default)
+
+# ======== Menu: Cluster ========
 elif menu == "Cluster":
     st.subheader("📊 Jumlah Data per Cluster (Bar Chart)")
     if df_default is not None and 'Cluster' in df_default.columns:
@@ -58,7 +69,7 @@ elif menu == "Pie Chart":
     else:
         st.warning("⚠️ Tidak ada kolom 'Cluster' di file.")
 
-# ======== Menu: Cluster Baru (Upload dan Clustering Otomatis) ========
+# ======== Menu: Cluster Baru ========
 elif menu == "Cluster Baru":
     st.subheader("📥 Upload Data untuk Clustering Baru")
 
