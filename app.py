@@ -9,7 +9,7 @@ st.set_page_config(page_title="Dashboard Klaster", layout="wide")
 st.title("📊 Aplikasi Analisis Klaster")
 
 # ======== File default hasil clustering ========
-file_csv_default = "Data_Fixx_Visualisasi.csv"
+file_csv_default = "data_awal_iterasi_fixx.csv"
 if os.path.exists(file_csv_default):
     df_default = pd.read_csv(file_csv_default, sep=None, engine='python')
 
@@ -83,3 +83,4 @@ elif menu == "Cluster Baru":
         file_cluster_baru = "data_cluster_baru.csv"
         df_new.to_csv(file_cluster_baru, index=False, sep=';')
         st.info(f"💾 Hasil disimpan di '{file_cluster_baru}', tidak mempengaruhi data di dashboard.")
+
